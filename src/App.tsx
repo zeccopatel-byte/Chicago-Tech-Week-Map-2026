@@ -388,10 +388,10 @@ export default function App() {
                   <div className="md:hidden relative z-50 pointer-events-auto">
                     <button 
                       onClick={() => setIsDayFilterOpen(!isDayFilterOpen)}
-                      className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-full transition-colors shadow-sm border bg-[#e5e5ea] text-neutral-900 border-black/5 hover:bg-[#d1d1d6] ${isDayFilterOpen || selectedDay !== 'All' ? 'text-[#41B6E6]' : ''}`}
+                      className={`shrink-0 flex items-center justify-center transition-colors text-gray-500 hover:text-gray-900 ${isDayFilterOpen || selectedDay !== 'All' ? 'text-[#41B6E6]' : ''}`}
                       aria-label="Day Filter"
                     >
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="w-5 h-5" />
                     </button>
                   </div>
                 </div>
@@ -399,6 +399,30 @@ export default function App() {
                     <span className="hidden md:inline">Explore Chicago events July 20–26 with interactive maps, day and category filters. Plan your week faster.<br /><br /></span>
                     <span className="block md:inline">Built independently by <a href="https://www.linkedin.com/in/monicapara/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#E4002B]`}>Monica</a> & <a href="https://www.linkedin.com/in/zalak-zecco-patel-3a618890/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#E4002B]`}>Zecco</a>.<span className="hidden md:inline"> Not affiliated with P33 Chicago.</span></span>
                 </p>
+
+                <div className="flex md:hidden items-center gap-3 mb-2">
+                  <button 
+                    onClick={() => setIsListOpen(!isListOpen)}
+                    className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg bg-black text-white ${isListOpen ? 'text-[#41B6E6]' : ''}`}
+                    aria-label="Toggle List"
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                  <button 
+                    onClick={() => setIsDarkMode(!isDarkMode)}
+                    className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg bg-black text-white`}
+                    aria-label="Toggle Dark Mode"
+                  >
+                    {isDarkMode ? '☀️' : '🌙'}
+                  </button>
+                  <button 
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                    className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg bg-black text-white ${isFilterOpen || selectedTheme !== 'All Themes' ? 'text-[#41B6E6]' : ''}`}
+                    aria-label="Filter Icon"
+                  >
+                    <Filter className="w-5 h-5" />
+                  </button>
+                </div>
 
                 <div className="mb-2 md:mb-4 hidden md:block">
                   <label className={`block text-[10px] font-bold uppercase tracking-wider mb-2 text-gray-500`}>
@@ -468,14 +492,14 @@ export default function App() {
             <div className="flex items-center gap-2">
             <button 
               onClick={() => setIsListOpen(!isListOpen)}
-              className={`md:hidden shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'} ${isListOpen ? 'text-[#41B6E6]' : ''}`}
+              className={`hidden shrink-0 w-11 h-11 items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'} ${isListOpen ? 'text-[#41B6E6]' : ''}`}
               aria-label="Toggle List"
             >
               <List className="w-5 h-5" />
             </button>
             <button 
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none hover:bg-neutral-200' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'}`}
+              className={`hidden md:flex shrink-0 w-11 h-11 items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none hover:bg-neutral-200' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'}`}
               aria-label="Toggle Dark Mode"
             >
               {isDarkMode ? '☀️' : '🌙'}
@@ -483,7 +507,7 @@ export default function App() {
             <div className="relative">
               <button 
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none hover:bg-neutral-200' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'} ${isFilterOpen || selectedTheme !== 'All Themes' ? 'text-[#41B6E6]' : ''}`}
+                className={`hidden md:flex shrink-0 w-11 h-11 items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none hover:bg-neutral-200' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'} ${isFilterOpen || selectedTheme !== 'All Themes' ? 'text-[#41B6E6]' : ''}`}
                 aria-label="Filter Icon"
               >
                 <Filter className="w-5 h-5" />
