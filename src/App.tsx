@@ -410,7 +410,7 @@ export default function App() {
                 </div>
                 <p className={`text-xs md:text-sm leading-relaxed mb-3 md:mb-5 font-medium text-gray-600`}>
                     <span className="hidden md:inline">Explore Chicago events July 20–26 with interactive maps, day and category filters. Plan your week faster.<br /><br /></span>
-                    <span className="block md:inline">Built independently by <a href="https://www.linkedin.com/in/monicapara/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#ffffff]`}>Monica</a> & <a href="https://www.linkedin.com/in/zalak-zecco-patel-3a618890/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#ffffff]`}>Zecco</a>.<span className="hidden md:inline"> Not affiliated with P33 Chicago.</span></span>
+                    <span className="block md:inline">Built independently by <a href="https://www.linkedin.com/in/monicapara/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#41B6E6] active:text-[#41B6E6] hover:font-bold active:font-bold`}>Monica</a> & <a href="https://www.linkedin.com/in/zalak-zecco-patel-3a618890/" target="_blank" rel="noopener noreferrer" className={`underline transition-colors hover:text-[#41B6E6] active:text-[#41B6E6] hover:font-bold active:font-bold`}>Zecco</a>.<span className="hidden md:inline"> Not affiliated with P33 Chicago.</span></span>
                 </p>
 
                 <div className="flex md:hidden items-center gap-3 mb-2">
