@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { useState, useMemo, useEffect } from 'react';
-import { Filter, List, Calendar, X } from 'lucide-react';
+import { Filter, List, Calendar, X, Search } from 'lucide-react';
 import { PolygonLayer } from '@deck.gl/layers';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import { Map, Marker, Popup, useControl } from 'react-map-gl/maplibre';
@@ -248,6 +248,7 @@ export default function App() {
 
   const [selectedDay, setSelectedDay] = useState<string>('All');
   const [selectedTheme, setSelectedTheme] = useState<string>('All Themes');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const DAYS = ['All', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
   const THEMES = [
@@ -275,9 +276,10 @@ export default function App() {
     return COMPANIES.filter(c => {
       const dayMatch = selectedDay === 'All' || getDayForDate(c.date) === selectedDay;
       const themeMatch = selectedTheme === 'All Themes' || c.theme === selectedTheme;
-      return dayMatch && themeMatch;
+      const searchMatch = !searchQuery || c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.theme.toLowerCase().includes(searchQuery.toLowerCase());
+      return dayMatch && themeMatch && searchMatch;
     });
-  }, [selectedDay, selectedTheme]);
+  }, [selectedDay, selectedTheme, searchQuery]);
 
   const buildingsData = useMemo(() => getMockBuildings(), []);
 
@@ -619,8 +621,24 @@ export default function App() {
         </div>
 
         <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-            <div className={`mb-4 px-1 text-sm font-semibold ${isDarkMode ? 'text-neutral-400' : 'text-gray-500'}`}>
-               {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Event' : 'Events'}
+            <div className={`mb-4 flex flex-col gap-3 px-1`}>
+                <div className={`relative flex items-center w-full ${isDarkMode ? 'text-neutral-400' : 'text-gray-500'}`}>
+                    <Search className="absolute left-3 w-4 h-4" />
+                    <input
+                        type="text"
+                        placeholder="Search events or themes..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl outline-none transition-colors border ${
+                            isDarkMode 
+                            ? 'bg-[#1c1c1e] border-white/10 text-white placeholder-neutral-500 focus:border-[#41B6E6]' 
+                            : 'bg-white border-black/10 text-gray-900 placeholder-gray-400 focus:border-[#41B6E6]'
+                        }`}
+                    />
+                </div>
+                <div className={`text-sm font-semibold ${isDarkMode ? 'text-neutral-400' : 'text-gray-500'}`}>
+                   {filteredCompanies.length} {filteredCompanies.length === 1 ? 'Event' : 'Events'}
+                </div>
             </div>
             <div className="space-y-4">
               {filteredCompanies.map((company, idx) => (
