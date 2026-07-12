@@ -8,6 +8,7 @@ import { PolygonLayer } from '@deck.gl/layers';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import { Map, Marker, Popup, useControl } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import posthog from 'posthog-js';
 
 function DeckGLOverlay(props: any) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -272,6 +273,14 @@ export default function App() {
     return map[dateStr] || 'All';
   };
 
+  useEffect(() => {
+    if (!searchQuery) return;
+    const timer = setTimeout(() => {
+      posthog.capture('event_searched', { query: searchQuery });
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   const filteredCompanies = useMemo(() => {
     return COMPANIES.filter(c => {
       const dayMatch = selectedDay === 'All' || getDayForDate(c.date) === selectedDay;
@@ -339,6 +348,12 @@ export default function App() {
                          e.stopPropagation();
                      }
                      setSelectedCompany(company);
+                     posthog.capture('event_marker_clicked', {
+                       event_id: company.id,
+                       event_name: company.name,
+                       event_theme: company.theme,
+                       event_date: company.date,
+                     });
                  }}
               >
                  <div className="block outline-none relative hover:z-50">
@@ -378,11 +393,18 @@ export default function App() {
                     </div>
                     <h3 className="text-base font-semibold mb-1 leading-tight">{selectedCompany.name}</h3>
                     <p className={`text-sm leading-relaxed mb-4 ${isDarkMode ? 'text-neutral-400' : 'text-gray-500'}`}>{selectedCompany.desc}</p>
-                    <a 
-                        href={selectedCompany.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
+                    <a
+                        href={selectedCompany.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className={`block text-center text-[13px] font-semibold py-2.5 rounded-xl transition-colors ${isDarkMode ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}
+                        onClick={() => posthog.capture('event_view_clicked', {
+                          event_id: selectedCompany.id,
+                          event_name: selectedCompany.name,
+                          event_theme: selectedCompany.theme,
+                          event_date: selectedCompany.date,
+                          source: 'map_popup',
+                        })}
                     >
                         View Event
                     </a>
@@ -416,15 +438,21 @@ export default function App() {
                 </p>
 
                 <div className="flex md:hidden items-center gap-3 mb-2">
-                  <button 
-                    onClick={() => setIsListOpen(!isListOpen)}
+                  <button
+                    onClick={() => {
+                      if (!isListOpen) posthog.capture('event_list_opened');
+                      setIsListOpen(!isListOpen);
+                    }}
                     className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg bg-black text-white ${isListOpen ? 'text-[#41B6E6]' : ''}`}
                     aria-label="Toggle List"
                   >
                     <List className="w-5 h-5" />
                   </button>
-                  <button 
-                    onClick={() => setIsDarkMode(!isDarkMode)}
+                  <button
+                    onClick={() => {
+                      posthog.capture('dark_mode_toggled', { new_mode: isDarkMode ? 'light' : 'dark' });
+                      setIsDarkMode(!isDarkMode);
+                    }}
                     className={`shrink-0 w-11 h-11 flex items-center justify-center rounded-full transition-colors shadow-lg bg-black text-white`}
                     aria-label="Toggle Dark Mode"
                   >
@@ -447,9 +475,12 @@ export default function App() {
                     {DAYS.map(day => (
                       <button
                         key={day}
-                        onClick={() => setSelectedDay(day)}
+                        onClick={() => {
+                          setSelectedDay(day);
+                          posthog.capture('day_filter_applied', { day });
+                        }}
                         className={`text-[11px] font-semibold tracking-wide px-3 py-1.5 rounded-full transition-colors ${
-                          selectedDay === day 
+                          selectedDay === day
                             ? 'bg-[#41B6E6] text-white'
                             : 'bg-[#e5e5ea] text-gray-700 hover:bg-[#d1d1d6]'
                         }`}
@@ -493,11 +524,18 @@ export default function App() {
                </div>
                <h3 className="text-lg font-bold mb-2 leading-tight">{selectedCompany.name}</h3>
                <p className={`text-sm leading-relaxed mb-5 ${isDarkMode ? 'text-neutral-400' : 'text-gray-500'}`}>{selectedCompany.desc}</p>
-               <a 
-                   href={selectedCompany.url} 
-                   target="_blank" 
-                   rel="noopener noreferrer" 
+               <a
+                   href={selectedCompany.url}
+                   target="_blank"
+                   rel="noopener noreferrer"
                    className={`block text-center text-[14px] font-semibold py-3 rounded-xl transition-colors ${isDarkMode ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}
+                   onClick={() => posthog.capture('event_view_clicked', {
+                     event_id: selectedCompany.id,
+                     event_name: selectedCompany.name,
+                     event_theme: selectedCompany.theme,
+                     event_date: selectedCompany.date,
+                     source: 'mobile_popup',
+                   })}
                >
                    View Event
                </a>
@@ -522,6 +560,7 @@ export default function App() {
                     onClick={() => {
                       setSelectedDay(day);
                       setIsDayFilterOpen(false);
+                      posthog.capture('day_filter_applied', { day });
                     }}
                     className={`text-base text-left px-4 py-3 rounded-2xl transition-colors ${
                       selectedDay === day
@@ -541,15 +580,21 @@ export default function App() {
         <div className="absolute bottom-12 left-0 right-0 flex justify-center pointer-events-none md:top-6 md:bottom-auto md:left-auto md:right-6 md:justify-end z-40">
           <div className="flex flex-col gap-2 items-center md:items-end pointer-events-auto">
             <div className="flex items-center gap-2">
-            <button 
-              onClick={() => setIsListOpen(!isListOpen)}
+            <button
+              onClick={() => {
+                if (!isListOpen) posthog.capture('event_list_opened');
+                setIsListOpen(!isListOpen);
+              }}
               className={`hidden shrink-0 w-11 h-11 items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'} ${isListOpen ? 'text-[#41B6E6]' : ''}`}
               aria-label="Toggle List"
             >
               <List className="w-5 h-5" />
             </button>
-            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)}
+            <button
+              onClick={() => {
+                posthog.capture('dark_mode_toggled', { new_mode: isDarkMode ? 'light' : 'dark' });
+                setIsDarkMode(!isDarkMode);
+              }}
               className={`hidden md:flex shrink-0 w-11 h-11 items-center justify-center rounded-full transition-colors shadow-lg backdrop-blur-2xl border ${isDarkMode ? 'bg-white text-black border-none hover:bg-neutral-200' : 'bg-white border-black/10 text-slate-700 hover:bg-[#f2f2f7]/80'}`}
               aria-label="Toggle Dark Mode"
             >
@@ -584,6 +629,7 @@ export default function App() {
                         onClick={() => {
                           setSelectedTheme(theme);
                           setIsFilterOpen(false);
+                          posthog.capture('theme_filter_applied', { theme });
                         }}
                         className={`text-sm text-left px-3 py-2 rounded-xl transition-colors ${
                           selectedTheme === theme
@@ -642,16 +688,23 @@ export default function App() {
             </div>
             <div className="space-y-4">
               {filteredCompanies.map((company, idx) => (
-              <a 
+              <a
                 key={company.id}
                 href={company.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`group block p-4 rounded-2xl transition-all duration-300 cursor-pointer relative overflow-hidden ${
-                  isDarkMode 
-                    ? 'bg-[#1c1c1e] hover:bg-[#2c2c2e]' 
+                  isDarkMode
+                    ? 'bg-[#1c1c1e] hover:bg-[#2c2c2e]'
                     : 'bg-white hover:bg-[#e5e5ea] shadow-sm hover:shadow-md'
                 }`}
+                onClick={() => posthog.capture('event_list_item_clicked', {
+                  event_id: company.id,
+                  event_name: company.name,
+                  event_theme: company.theme,
+                  event_date: company.date,
+                  list_position: idx,
+                })}
               >
                 {/* Minimal glow logic based on company color */}
                 <div 
