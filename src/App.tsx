@@ -102,6 +102,7 @@ const COMPANIES = [
   { id: '83', name: "Film Screening &#038; Talkback: The [Conserv]atives", color: '#a3a3a3', lat: 41.8902, lng: -87.6080, logo: '🎉', date: 'Jul 21', time: 'TBA', desc: "Chicago Cultural Center", url: "https://luma.com/jsagzc94", theme: 'Culture/Arts/Entertainment' },
   { id: '84', name: "Best Buy Teen Tech Center Drop-In Hours", color: '#a3a3a3', lat: 41.8675, lng: -87.6418, logo: '🎉', date: 'Jul 21', time: 'TBA', desc: "7200 S. Ingleside Chicago, IL 60619", url: "https://www.garycomeryouthcenter.org/services/best-buy-teen-tech-center", theme: 'Culture/Arts/Entertainment' },
   { id: '85', name: "The Composting Gap: Why Compostables End Up in Landfills and How We Fix It", color: '#a3a3a3', lat: 41.9025, lng: -87.6339, logo: '🎉', date: 'Jul 21', time: 'TBA', desc: "2010 W Fulton St Chicago, IL", url: "https://luma.com/l1moh2o2", theme: 'Culture/Arts/Entertainment' },
+  { id: '86', name: 'Beauty By Design: UX/UI Visualizing the Future of Tech', color: '#41B6E6', lat: 41.8860, lng: -87.6495, logo: '🎨', date: 'Jul 24', time: '1:00 PM', desc: 'Good Ambler, Chicago, IL', url: 'https://luma.com/s717sefd?tk=CKzHFD', theme: 'Culture/Arts/Entertainment' },
 ];
 
 function toSentenceCase(str: string) {
